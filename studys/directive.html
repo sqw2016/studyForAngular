@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>angular 指令</title>
+	<meta charset="utf-8" />
+	<style type="text/css">
+		.fontSize50 {
+			font-size: 50px;
+		}
+		.blue {
+			color: blue;
+		}
+		.bgGreen {
+			background-color: green;
+		}
+		.bgRed {
+			background-color: red;
+		}
+	</style>
+</head>
+<body>
+	<!-- ng-app定义应用程序的根元素 ng-init初始化数据 ng-controller定义控制器对象 -->
+	<div ng-app="myApp" ng-init="host='wsq'" ng-controller="myCtrl">
+		<!-- ng-bind 使用给定的变量或表达式来替换元素的内容 ng-cloak防止加载时闪烁 -->
+		<p><span ng-bind="host" ng-cloak></span> is studing angular.</p>
+		<!-- ng-bind-html 通过一个更安全的方式将内容绑定到元素中去，会移除html中的危险代码，但需要引入angular-sanitize.js
+		一般用于变量或表达式中存在html片段
+		-->
+		<p ng-bind-html="dangerHtml"></p>
+		<!-- ng-bind-template 使用指定的表达式来替换元素内容，一般用于想将多个表达式绑定到一个元素的情况 -->
+		<p ng-bind-template="{{foods[0] + ' is good!'}} {{foods[1] + ' is very nice!'}}"></p>
+		<!-- ng-class 给元素动态绑定一个或多个类，变量或表达式返回的可以是字符串(多个用空格分隔)，数组，对象(key为类名，value为true or false，为true时类才生效) -->
+		<p ng-class="strClass">这是一个ng-class控制的元素，变量为string</p>
+		<p ng-class="arrClass">这是一个ng-class控制的元素，变量为array</p>
+		<p ng-class="objClass">这是一个ng-class控制的元素，变量为object</p>
+		<!-- ng-class-even和ng-class-odd分别给偶数行和奇数行添加一个或多个类，常和ng-repeat搭配使用 -->
+		<ul>
+			<li ng-repeat="f in foods" ng-class-even="'bgGreen'" ng-class-odd="'bgRed'">{{f}}</li>
+		</ul>
+	</div>
+	<script type="text/javascript" src="../libs/basic/angular.min.js"></script>
+	<script type="text/javascript" src="../libs/basic/angular-sanitize.min.js"></script>
+	<script type="text/javascript">
+		/*定义模板的时候需要加上引入的angular-sanitize.js中的模块ngSanitize*/
+		var app = angular.module('myApp', ['ngSanitize']);
+		app.controller('myCtrl', function($scope){
+			$scope.dangerHtml = '这是一段<strong>危险</strong>的代码';
+			$scope.foods = ['饺子', '灌汤包', '炒粉', '肉饼汤'];
+			$scope.strClass = 'fontSize50 blue bgGreen';
+			$scope.arrClass = ['fontSize50', 'blue', 'bgGreen']; 
+			$scope.objClass = {
+				fontSize50: true,
+				blue: false,
+				bgGreen: true
+			};
+		})
+	</script>
+</body>
+</html>
