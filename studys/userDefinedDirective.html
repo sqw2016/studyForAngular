@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>angularJs 自定义指令</title>
+	<meta charset="utf-8" />
+</head>
+<body>
+	<div ng-app="myApp" ng-controller="myCtrl">
+		<!-- 自定义指令的四种使用方式 -->
+		<div print-hello></div>
+		<print-hello></print-hello>
+		<div class="print-hello"></div>
+		<!-- directive: print-hello -->
+
+		<!--  父作用域模型 -->
+		<input type="text" name="test" ng-model="test1" />
+		<p>父级:{{test1}}</p>
+		<scope-false></scope-false>
+
+		<!-- scope位自定义对象的指令 -->
+		<scope-object my-id="objScope" my-name="name" my-fun="sayHello(num)"></scope-object>
+
+		<!-- 嵌套指令使用 -->
+		<father>
+			<son></son>
+		</father>
+	</div>
+	<script type="text/javascript" src="../libs/basic/angular.min.js"></script>
+	<script type="text/javascript">
+		var app = angular.module('myApp', []);
+		/*通过directive('directiveName', fun)方法添加自定义指令。directiveName以驼峰形式命名，使用时以“-”间隔，可以作为标签，属性，类名和注释使用。默认可以作为标签和属性使用，如果想要作为类名和注释使用，需要设置restrict的值为C和M，且设置M时，需要添加replace:true，以注释方法使用的自定义指令才能显示。
+		restrict规定自定义指令可以通过哪些方式使用:
+					E : 元素
+					A : 属性
+					C : 类名
+					M : 注释
+		
+		*/
+		app.directive('printHello', function(){
+			return {
+				/*scope指定作用域，默认为false，表示共享父级作用域，为true时，会继承父级作用域，但不会共享，父子作用域相互不影响，为{}时，表示自定义作用域，与父级作用域无关。*/
+				scope:false,
+				restrict: 'EACM',
+				replace: true,
+				template: '<h1>Hello user-defined directive!</h1>'
+			};
+		});
+
+		/*自定义directive，scope为默认值false，共享父级作用域*/
+		app.directive('scopeFalse', function(){
+			return {
+				scope: true,/*scope为默认值true，继承父级作用域并创建自己的作用域*/
+				template: '<input type="text" name="subTest" ng-model="test1" /><p>子级:{{test1}}</p>'
+			};
+		});
+
+		/*自定义指令scope为对象时*/
+		app.directive('scopeObject', function(){
+			return {
+				scope: {//规定指令的数据模型和其按照什么类型解析，类似与变量定义和类型声明，并可在template中使用
+					myId: '@',//@ 表示解析字符串，即原样使用，不解析。
+					myName: '=',//= 表示解析数据，可以是变量和表达式 ，和ng-model一样
+					myFun: '&'//& 表示解析函数
+				},
+				/*指令的控制器，定义指令的数据模型*/
+				controller: function($scope){
+					$scope.name = 'directiveController';
+				},
+				/*link表示directive被angularJs编译之后执行的函数，包含3个参数
+				scope: 表示当前的作用域
+				element: 表示当前DOM元素
+				attr: 表示自定义属性
+				*/
+				link: function(scope, element, attr) {
+					console.log(scope);
+					console.log(element);
+					console.log(attr);
+				},
+				template: '<div id="{{myId}}" ng-click="myFun({num:3})">{{myName}}</div>'
+			};
+		});
+
+		/*指令嵌套*/
+		/*父指令*/
+		app.directive('father', function(){
+			return {
+				transclude: true,//表示允许指令嵌套，通过ng-transclude指定嵌套范围
+				controller: function($scope){
+					$scope.fatherName = 'da tou';
+					$scope.sonName = 'xiao tou';
+					this.sonName = 'xiao tou';//使用this共享数据给其他指令
+
+					/*注意:::只要嵌套的自定义指令scope没有设置为对象，则子指令可以直接访问父指令中的所有数据*/
+				},
+				template: '<div><h1>{{fatherName}}</h1> is the father of <h1 ng-transclude></h1></div>'
+			}
+		});
+
+		/*子指令*/
+		app.directive('son', function(){
+			return {
+				require: '^father',//指定指令的父级，通过^来指定，如果不能确定，通过？来做容错处理，但父指令共享的 数据不可知，reController为null
+				template: '<span>{{sonName}}</span>',
+				link: function(scope, element, attr, reController) {
+					console.log(scope);
+					/*reController为父指令共享出来的数据*/
+					console.log('父指令共享的数据:');
+					console.log(reController);
+				}
+			};
+		});
+
+		app.controller('myCtrl', function($scope){
+			$scope.name = 'wsq';
+			$scope.sayHello = function(num) {
+				alert('hello' + num);
+			};
+		});
+	</script>
+</body>
+</html>
