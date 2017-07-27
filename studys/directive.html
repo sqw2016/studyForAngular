@@ -37,6 +37,104 @@
 		<ul>
 			<li ng-repeat="f in foods" ng-class-even="'bgGreen'" ng-class-odd="'bgRed'">{{f}}</li>
 		</ul>
+		<!-- ng-disabled 规定表单元素是否被禁用 表达式返回true时禁用  -->
+		被禁用的输入框: <input type="text" name="name" ng-disabled="true" />
+		<button ng-disabled="true">按钮</button>
+		<!-- ng-hide和ng-show 规定元素的现实和隐藏 -->
+		<div ng-show="isHide">被隐藏的块</div>
+		<div ng-hide="isHide">显示的块</div>
+		<!-- ng-href 为a标签添加链接，覆盖了原来的href，一般用在href中有angularJs代码 
+			可以是字符串或{{}}表达式，不能是变量
+		-->
+		<a ng-href="{{href}}">百度</a>
+		<!-- ng-if false时移除元素，true时添加元素 -->
+		<div ng-if="isHide">被移除的元素</div>
+		<div ng-if="!isHide">添加的元素</div>
+
+
+		<!-- ng-include 将被包含的文件作为子节点引入，另外可以指定onload:加载完成之后执行的表达式，
+		autoscroll:是否自动添加滚动 -->
+		<!-- <div ng-include="'studys/helloWorld.html'" onload="loadSuccess" autoscroll="true"></div> -->
+		<!-- ng-include也可以作为标签来使用 -->
+		<!-- <ng-include src="'studys/helloWorld.html'" onload="loadSuccess" autoscroll="true"></ng-include> -->
+
+
+		<!-- ng-list 将字符串转化为数组，并使用逗号分隔  ng-model 将输入的值绑定到控制器的$scope中 -->
+		<input type="text" name="arrTest" ng-model="listTest" ng-list />
+		<div>带有ng-list的可编辑框会将字符串转换为数组:{{listTest}}</div>
+
+		<!-- ng-model-options 规定绑定到模型的时机 
+			updateOn:'event' 事件触发之后绑定
+			debounce: 1000 1000毫秒之后绑定
+			allowInvalid: true|false 是否验证之后绑定到模型
+			getterSetter:是否作为 getters/setters 绑定到模型
+			timezone: '0100' 规定是否使用时区
+		-->
+		<input type="text" name="modelOptions" ng-model="clickOptions" ng-model-options="{updateOn: 'blur'}" />
+		<p>失去焦点之后会触发绑定:{{clickOptions}}</p>
+		<input type="text" name="modelOptions" ng-model="debounceOptions" ng-model-options="{debounce:2000}" />
+		<p>两秒之后会触发绑定:{{debounceOptions}}</p>
+
+		<!-- ng-non-bindable 告诉angularJs子元素不需要编译，即子元素中的angular不会起作用 -->
+		<div ng-non-bindable>
+			这里的angularJs不会起作用
+			<span>{{dangerHtml}}</span>
+		</div>
+
+		<!-- ng-open 指定details元素的open属性 -->
+		<details ng-open="false">
+			<summary>ng-open</summary>
+			<p>ss1d dfk j j j j j j jj j j j j j j</p>
+		</details>
+
+		<!-- ng-options 设置select元素的option -->
+		<select ng-model="food" ng-options="i for i in foods"></select>
+		<p>选中的食物:{{food}}</p>
+
+		<!-- ng-readonly 动态设置表单域的readonly属性 -->
+		readOnly <input type="checkbox" name="readOnly" ng-model="isReadonly" />
+		<input type="text" name="textReadonly" ng-readonly="isReadonly" />
+
+		<!-- ng-repeat 用于循环输出多次html模板 -->
+		<p>ng-repeat循环输出:</p>
+		<p ng-repeat="f in foods">{{f}}</p>
+
+		<!-- ng-selected 设置option元素的selected属性 -->
+		编号:<select>
+			<option>1</option>
+			<option ng-selected="true">2</option>
+			<option>3</option>
+			<option>4</option>
+		</select>
+
+		<!-- ng-src 需要是字符串或{{}}表达式 替换<img>中的src属性，如果src中包含angularJs则使用ng-src -->
+		七龙珠： <img ng-src="{{imgSrc}}" />
+
+		<!-- ng-srcset 用法同上，也可用作替换<source>中的srcset -->
+		七龙珠： <img ng-srcset="{{imgSrc}}" />
+
+		<!-- ng-style 替换元素的style属性，但返回的必须是对象 -->
+		<p ng-style="styleObj">这是段使用ng-style定义样式的文本</p>
+
+		<!-- ng-switch 根据表达式显示或隐藏相应部分，与ng-switch-when配合使用 -->
+		我喜欢： <select ng-model="loveFood">
+			<!-- ng-value 覆盖input/option 中的value属性，value含有angularJs的情况下使用 -->
+			<option ng-value="$index" ng-repeat="f in foods">{{f}}</option>
+		</select>
+		<div ng-switch="loveFood">
+			<div ng-switch-when="0">
+				<h1>饺子</h1>
+			</div>
+			<div ng-switch-when="1">
+				<h1>灌汤包</h1>
+			</div>
+			<div ng-switch-when="2">
+				<h1>炒粉</h1>
+			</div>
+			<div ng-switch-when="3">
+				<h1>肉饼汤</h1>
+			</div>
+		</div>
 	</div>
 	<script type="text/javascript" src="../libs/basic/angular.min.js"></script>
 	<script type="text/javascript" src="../libs/basic/angular-sanitize.min.js"></script>
@@ -52,6 +150,17 @@
 				fontSize50: true,
 				blue: false,
 				bgGreen: true
+			};
+			$scope.isHide = false;
+			$scope.href = 'http://www.baidu.com';
+			$scope.loadSuccess = function(){
+				alert('ok');
+			};
+			$scope.imgSrc = '../images/1.jpg';
+			$scope.styleObj = {
+				'color': 'red',
+				'background-color': 'orange',
+				'font-size': '60px'
 			};
 		})
 	</script>
