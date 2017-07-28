@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>angularJs 数据模型</title>
+	<meta charset="utf-8" />
+	<style type="text/css">
+		/*angularJs可以根据ng-model绑定元素的状态自动添加/移除相应的CSS类*/
+		/*定义通过验证的时候的CSS*/
+		input.ng-valid {
+			background-color: green;
+		}
+		/*定义为空的时候的CSS*/
+		input.ng-empty {
+			background-color: grey;
+		}
+		/*定义不为空的时候的CSS*/
+		input.ng-not-empty {
+			background-color: lightblue;
+		}
+		/*定义点击前的CSS*/
+		input.ng-untouched {
+			background-color: black;
+		}
+		/*定义点击后的CSS*/
+		input.ng-touched {
+			background-color: lightgrey;
+		}
+		/*未通过验证的CSS*/
+		input.ng-invalid {
+			background: red;
+		}
+		/*修改后的CSS*/
+		input.ng-dirty {
+			background-color: orange;
+		}
+		/*修改前的CSS*/
+		input.ng-pristine {
+			background-color: green;
+		}
+
+	</style>
+</head>
+<body>
+	<div ng-app="modelApp" ng-controller="modelCtrl">
+		<form name="myForm">
+			<label>姓名:
+				<!-- ng-model 定义数据的model，实现数据的双向绑定，可用于input，textarea，select等 -->
+				<input type="text" name="userName" ng-model="userName" />
+			</label>
+			<label>邮箱:
+				<input type="email" name="email" ng-model="email" />
+				<!-- angularJs可以通过formName.inputName.$error.type来进行表单验证 -->
+				<span ng-show="myForm.email.$error.email">邮箱格式不正确</span>
+				<!-- ng-model为应用数据提供了一系列状态值 -->
+				<p>邮箱格式是否正确:{{myForm.email.$valid}}</p>
+				<p>是否修改过邮箱:{{myForm.email.$dirty}}</p>
+				<p>是否点击过编辑框:{{myForm.email.$touched}}</p>
+			</label>
+			<p>用户:{{userName}}</p>
+		</form>
+	</div>
+	<script type="text/javascript" src="../libs/basic/angular.min.js"></script>
+	<script type="text/javascript">
+		var app = angular.module('modelApp', []);
+		app.controller('modelCtrl', function($scope){
+			$scope.userName = 'lilei';
+		})
+	</script>
+</body>
+</html>
