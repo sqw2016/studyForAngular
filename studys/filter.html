@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>angularJs 过滤器</title>
+	<meta charset="utf-8" />
+	<script type="text/javascript" src="../libs/basic/angular.min.js"></script>
+</head>
+<body>
+	<div ng-app="filterApp" ng-controller="filterCtrl" ng-cloak>
+		<!-- angularJs 过滤器可用于转换数据 -->
+		<!-- | currency: "str" 用于转换为货币形式数据，默认为$，也可以指定为其他货币单位 -->
+		<span>{{price | currency}}</span><br/>
+		<span>{{price | currency:"￥"}}</span>
+
+		<!-- | uppercase/| lowercase 格式化字符串为大写或小写 -->
+		<p>{{desc | uppercase}}</p>
+		<p>{{desc | lowercase}}</p>
+
+		<!-- | date 时间格式化 -->
+		<p>{{1490161945000 | date:"yyyy-MM-dd HH:mm:ss"}}</p>
+		<p>{{1490161945000 | date:"yyyy年MM月dd日 HH时mm分ss秒"}}</p>
+
+		<!-- | number 数字格式化，保留多少位小数，四舍五入，为负数时表示取整 -->
+		<p>{{4224 | number:-3}}</p>
+		<p>{{33.3374 | number:2}}</p>
+		<p>{{22245666 | number:-4}}</p>
+
+		<!-- | orderBy 根据表达式排序 -->
+		<p>升序排列:</p>
+		<p ng-repeat="u in users|orderBy:'userId'">{{u.userId}}  {{u.userName}}</p>
+		<p>降序排列:</p>
+		<p ng-repeat="u in users|orderBy:'userId':true">{{u.userId}}  {{u.userName}}</p>
+
+		<!-- | filter 根据表达式过滤 -->
+		<label>输入过滤字符:
+			<input type="text" name="filterStr" ng-model="filterStr" />
+		</label>
+		<ul>
+			<li ng-repeat="u in users | filter:{userName:filterStr} | orderBy:userId">{{u.userName}}</li>
+		</ul>
+	</div>
+	<script type="text/javascript">
+		var app = angular.module('filterApp', []);
+		app.controller('filterCtrl', ['$scope', function($scope){
+			$scope.price = 21400;
+			$scope.desc = 'this is a filter demo.';
+			$scope.users = [{
+				userId : 1,
+				userName : 'lilei'
+			}, {
+				userId : 2,
+				userName : 'hanmeimei'
+			}, {
+				userId : 7,
+				userName : 'wangwu'
+			}, {
+				userId : 5,
+				userName : 'lisi'
+			}]
+		}]);
+	</script>
+</body>
+</html>
