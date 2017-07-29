@@ -38,6 +38,17 @@
 		<ul>
 			<li ng-repeat="u in users | filter:{userName:filterStr} | orderBy:userId">{{u.userName}}</li>
 		</ul>
+
+		<!-- | limitTo 字符串的截取 正数表示从前开始截取多少位，负数表示从后开始截取多少位
+		接受两个参数，第一个是截取多少位，第二个表示从哪个位置开始
+		-->
+		<p>{{desc |trim | limitTo:5:9}}</p>
+		<p>{{desc |trim | limitTo:-4:5}}</p>
+
+		<!-- 自定义过滤器 无参数 -->
+		<p>{{desc | trim}}</p>
+		<!-- 自定义过滤器，多参数，以:分隔 -->
+		<p>{{desc | arguments:'23':33}}</p>
 	</div>
 	<script type="text/javascript">
 		var app = angular.module('filterApp', []);
@@ -58,6 +69,20 @@
 				userName : 'lisi'
 			}]
 		}]);
+
+		/*自定义过滤器 --- 无参数*/
+		app.filter('trim', function(){
+			return function(text){
+				return text.replace(/ /g, '');
+			};
+		});
+		/*自定义过滤器 --- 多参数*/
+		app.filter('arguments', function(){/*可以依赖注入*/
+			return function(text){
+				var newArgumentsArr = Array.prototype.slice.call(arguments);//将类数组转换为数组
+				return text + newArgumentsArr.join();
+			};
+		});
 	</script>
 </body>
 </html>
