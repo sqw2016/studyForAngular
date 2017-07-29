@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>angularJs 作用域</title>
+	<meta charset="utf-8" />
+</head>
+<body>
+	<div ng-app="scopeApp">
+		<!-- angularJs内外层作用域演示，点击button，只有内层会加1，外层显示不变。
+			原理: angularJs内外层作用域是通过javascript的原型链形式来实现继承的，
+			内层域的基本数据类型改变不会影响外层域的数据，但是引用类型的数据改变会影响外层域的数据。
+			内层域的基本数据类型变量赋值时会在内层域直接新增数据模型，对象属性变更时会先查找对象，然后在修改，如果时直接赋值对象，也是直接添加，不会影响外层域。
+		 -->
+		<div ng-controller="outCtrl">
+			<p>姓名: {{person.name}}</p>
+			<span ng-bind="data.a"></span>
+			<div ng-controller="innerCtrl">
+				<p>年龄: {{$root.person.age}}</p>
+				<span ng-bind="data.a"></span>
+				<button ng-click="data.a=data.a+1">+1</button>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../libs/basic/angular.min.js"></script>
+	<script type="text/javascript">
+		var app = angular.module('scopeApp', []);
+		app.controller('outCtrl',['$scope', '$rootScope', function($scope,$rootScope){
+			$scope.data = {
+				a : 1
+			};
+
+			/*所有应用都有一个$rootScope,可以在这个应用下的所有元素中使用，是一个共有的对象，应用下的所有控制器都可以修改和使用它。在元素中使用时可以通过$root.person来使用，也可以直接通过变量明来使用*/
+			$rootScope.person = {
+				name : 'lilei',
+				age : 22
+			}
+		}]);
+
+		app.controller('innerCtrl', ['$scope', '$rootScope', function($scope,$rootScope){
+			$scope.data = {
+				a : 2
+			};
+			$rootScope.person.name = 'hanmeimei';
+		}]);
+	</script>
+</body>
+</html>
