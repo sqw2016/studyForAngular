@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>angularJs 服务</title>
+	<meta charset="utf-8" />
+	<script type="text/javascript" src="../libs/basic/angular.min.js"></script>
+</head>
+<body ng-app="serviceApp">
+	<div ng-controller="serviceCtrl">
+		<p>本页面路径: {{localUrl}}</p>
+		<!-- 延迟赋值 -->
+		<p>延迟赋值:{{timeoutValue}}</p>
+		<!-- 秒表 -->
+		<p>秒表: {{second}}</p>
+		<!-- 自定义服务的使用 -->
+		<p>在控制器中使用自定义服务: {{reverseStr}}</p>
+		<p>在指令中使用自定义服务: <span ng-bind="reverseStr"></span></p>
+
+		<!-- $witch服务监控页面变化 -->
+		<label>
+			输入: <input type="text" name="changeText" ng-model="changeText" />
+		</label>
+		<p>输入变化次数：{{changeCount}}</p>
+	</div>
+	<script type="text/javascript">
+		var app = angular.module('serviceApp', []);
+		/*angular服务是一个函数或者对象，这些服务可以获取到angular应用声明周期的每一个阶段，和$watch整合，让angular可以监控整个应用，处理事件变化。自定义服务注入时不需要加$*/
+		app.controller('serviceCtrl', function($scope, $location, $http, $timeout, $interval, reverse) {
+			/*$location服务， 取页面路径*/
+			$scope.localUrl = $location.absUrl();
+			$scope.second = 0;
+			$scope.changeCount = 0;
+			$scope.reverseStr = 'how are you, are you ok?';
+			$scope.reverseStr = reverse.reverse($scope.reverseStr);
+			/*$http服务 向服务器请求数据*/
+			/*$http.get('helloWorld.html').then(function(response){
+				console.log(response);
+			});*/
+
+			/*$timeout服务对应setTimeout函数，设置延迟执行*/
+			$timeout(function() {
+				$scope.timeoutValue = '这是一个迟来的值';
+			}, 2000);
+
+			/*$interval服务对应setInterval函数，循环执行一段代码*/
+			$interval(function() {
+				$scope.second += 1;
+			}, 1000);
+
+			/*$watch()是一个scope函数，用于监听应用的变化*/
+			$scope.$watch('changeText', function(newValue, oldValue, rootScope) {
+				$scope.changeCount += 1;
+			});
+		});
+
+		/*自定义服务，可以在指令、控制器、过滤器或其他服务中使用*/
+		app.service('reverse', function() {
+			/*使用this为服务添加对象和方法*/
+			this.isReverse = true;
+			this.reverse = function(text) {
+				var newArr = text.split('');
+				return newArr.reverse().join().replace(/,/g, '');
+			};
+		});
+	</script>
+</body>
+</html>
